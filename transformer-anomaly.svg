@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="tBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#BFE3D3"/>
+      <stop offset="55%" stop-color="#F6B8CE"/>
+      <stop offset="100%" stop-color="#D9F0F7"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="500" fill="url(#tBg)"/>
+
+  <circle cx="720" cy="70" r="80" fill="#8FD2E8" opacity="0.28"/>
+  <circle cx="70" cy="440" r="70" fill="#E8799E" opacity="0.18"/>
+
+  <text x="400" y="80" text-anchor="middle" font-family="Georgia, 'Fraunces', serif" font-style="italic" font-size="22" fill="#332C2A" opacity="0.6">self-attention over sensor sequence</text>
+
+  <!-- token row: input sensor readings -->
+  <g font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="700">
+    <g id="tokens">
+      <rect x="120" y="120" width="60" height="42" rx="10" fill="#fff" opacity="0.85"/>
+      <rect x="215" y="120" width="60" height="42" rx="10" fill="#fff" opacity="0.85"/>
+      <rect x="310" y="120" width="60" height="42" rx="10" fill="#fff" opacity="0.85"/>
+      <rect x="405" y="120" width="60" height="42" rx="10" fill="#E8799E" opacity="0.9"/>
+      <rect x="500" y="120" width="60" height="42" rx="10" fill="#fff" opacity="0.85"/>
+      <rect x="595" y="120" width="60" height="42" rx="10" fill="#fff" opacity="0.85"/>
+    </g>
+    <g fill="#332C2A" text-anchor="middle">
+      <text x="150" y="146">t1</text>
+      <text x="245" y="146">t2</text>
+      <text x="340" y="146">t3</text>
+      <text x="435" y="146" fill="#fff">t4</text>
+      <text x="530" y="146">t5</text>
+      <text x="625" y="146">t6</text>
+    </g>
+  </g>
+
+  <!-- attention lines converging on the anomalous token t4 -->
+  <g stroke="#332C2A" stroke-width="1.6" opacity="0.32" fill="none">
+    <path d="M150,162 C 200,220 380,240 430,162"/>
+    <path d="M245,162 C 280,215 390,235 432,162"/>
+    <path d="M340,162 C 360,205 400,225 435,162"/>
+    <path d="M530,162 C 500,205 460,225 440,162"/>
+    <path d="M625,162 C 560,220 470,240 440,162"/>
+  </g>
+  <g stroke="#E8799E" stroke-width="2.2" opacity="0.7" fill="none">
+    <path d="M340,162 C 360,205 400,225 435,162"/>
+    <path d="M530,162 C 500,205 460,225 440,162"/>
+  </g>
+
+  <!-- encoder / decoder stack -->
+  <g>
+    <rect x="220" y="300" width="150" height="40" rx="10" fill="#4F9A82" opacity="0.85"/>
+    <text x="295" y="326" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="14" fill="#fff">Encoder</text>
+
+    <rect x="430" y="300" width="150" height="40" rx="10" fill="#332C2A" opacity="0.75"/>
+    <text x="505" y="326" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="14" fill="#fff">Decoder</text>
+
+    <path d="M370,320 L 430,320" stroke="#332C2A" stroke-width="2.5" opacity="0.5" marker-end="url(#arrow2)"/>
+  </g>
+  <defs>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#332C2A" opacity="0.5"/>
+    </marker>
+  </defs>
+
+  <text x="400" y="400" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="16" fill="#332C2A" opacity="0.7">reconstruction error → anomaly score</text>
+</svg>
