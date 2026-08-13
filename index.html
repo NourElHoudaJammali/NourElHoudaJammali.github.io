@@ -297,19 +297,62 @@
     text-transform:uppercase; color:var(--ink-soft);
   }
 
+  [hidden]{ display:none !important; }
+
   .case{ margin-top:.5rem; border-top:1px solid rgba(51,44,42,.08); padding-top:.7rem; }
-  .case summary{
-    cursor:pointer; list-style:none;
-    font-size:.86rem; font-weight:700; color:var(--pink-deep);
-    display:flex; align-items:center; gap:.4rem;
+  .case-btn{
+    font-family:inherit; background:none; border:0; padding:0;
+    cursor:pointer; font-size:.86rem; font-weight:700; color:var(--pink-deep);
+    display:inline-flex; align-items:center; gap:.4rem;
+    transition:color .2s ease, gap .2s ease;
   }
-  .case summary::-webkit-details-marker{ display:none; }
-  .case summary::before{
-    content:'▸'; transition:transform .2s ease; display:inline-block;
+  .case-btn::after{ content:'→'; transition:transform .2s ease; }
+  .case-btn:hover{ color:var(--jade); }
+  .case-btn:hover::after{ transform:translateX(3px); }
+  .case-btn:focus-visible{ outline:3px solid var(--jade); outline-offset:4px; border-radius:4px; }
+
+  /* ---------- case study modal ---------- */
+  dialog.modal{
+    padding:0; border:none; border-radius:26px;
+    width:min(680px, calc(100% - 2rem));
+    max-height:min(86vh, 900px);
+    background:#fff; color:var(--ink);
+    box-shadow:0 40px 80px -24px rgba(51,44,42,.5);
+    overflow:hidden;
   }
-  .case[open] summary::before{ transform:rotate(90deg); }
-  .case summary:hover{ color:var(--jade); }
-  .case-body{ padding-top:.9rem; }
+  dialog.modal::backdrop{ background:rgba(51,44,42,.55); backdrop-filter:blur(3px); }
+  .modal-inner{ display:flex; flex-direction:column; max-height:inherit; }
+  .modal-head{
+    display:flex; align-items:flex-start; gap:1rem;
+    padding:1.4rem 1.5rem 1rem;
+    border-bottom:1px solid rgba(51,44,42,.09);
+  }
+  .modal-head h3{ font-size:1.2rem; flex:1; line-height:1.25; }
+  .modal-head .eyebrow{
+    font-size:.66rem; font-weight:700; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--jade); margin-bottom:.25rem;
+  }
+  .modal-close{
+    flex:none; width:34px; height:34px; border-radius:50%;
+    border:0; cursor:pointer; background:var(--cream-deep); color:var(--ink);
+    font-size:1.1rem; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .2s ease, transform .2s ease;
+  }
+  .modal-close:hover{ background:var(--pink); transform:rotate(90deg); }
+  .modal-close:focus-visible{ outline:3px solid var(--jade); outline-offset:2px; }
+  .modal-scroll{
+    overflow-y:auto; padding:1.3rem 1.5rem 1.7rem;
+    overscroll-behavior:contain;
+  }
+  .modal-scroll .case-body{ display:block; }
+  body.modal-open{ overflow:hidden; }
+
+  @media (max-width:520px){
+    dialog.modal{ width:calc(100% - 1rem); border-radius:20px; max-height:90vh; }
+    .modal-head{ padding:1.1rem 1.1rem .8rem; }
+    .modal-scroll{ padding:1.1rem 1.1rem 1.4rem; }
+  }
   .case-body h4{
     font-family:'Plus Jakarta Sans',sans-serif;
     font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
@@ -449,10 +492,10 @@
     <div class="hero-grid">
       <p>
         <!-- EDIT ME: adjust intro copy freely -->
-        <i>Welcome to a glimpse of my work!</i> <br> I'm Nour, a Business Computing graduate specializing in Business Intelligence,
-        with hands-on experience building analytics dashboards, ML-driven anomaly
-        detection tools, and IoT data pipelines. I have experience in making data actionable and accessible for decision-makers, and I'm passionate about turning complex
-        datasets into clear, insightful visualizations.
+        <i>Welcome to a glimpse of my work!</i> <br> I'm Nour, a Business Computing graduate
+        specializing in Business Intelligence. I build analytics dashboards, ML-driven anomaly
+        detection tools, and IoT data pipelines, with a focus on making the results clear enough
+        that the people who have to decide something can actually use them.
       </p>
       <div>
         <div class="eyebrow">BI · Data · ML</div>
@@ -476,16 +519,18 @@
     <div>
       <h2>A bit about me</h2>
       <p>
-        I studied Business Computing (Business Intelligence major) at Esprit School
-        of Business, where I learned a lot of the tools and techniques for working with data. 
-        Basically, I learned how to turn messes into meaningful insights.
+        I studied <strong>Business Computing (Business Intelligence major)</strong> at Esprit School
+        of Business, where I learned how to model, query and present data. The part I enjoy most is
+        still the same: turning a messy source into something a decision-maker can act on.
       </p>
       <p>
-        During a five-month internship at <strong>deZem GmbH</strong>, a Berlin-based IoT
-        data management and energy monitoring company, I worked as a Data &amp; ML
-        Developer / IoT Analyst, where I built an anomaly detection platform from scratch using React/TypeScript to build the frontend alongside a FastAPI backend and 
-        integrating three ML models into a unified evaluation pipeline. I also shipped features on deZem's production IoT analytics frontend, including an LLM-powered reporting pipeline and 
-        containerized deployments. In addition to that, I contributed to their legacy IoT frontend.
+        During a five-month internship at deZem GmbH, a Berlin-based IoT data management and energy
+        monitoring company, I worked as a <strong>Data &amp; ML Developer / IoT Analyst</strong>.
+        I built an <strong>anomaly detection platform from scratch</strong>: a React/TypeScript
+        frontend, a FastAPI backend, and <strong>three ML models</strong> brought together into a
+        single evaluation pipeline. I also shipped features on deZem's production IoT analytics
+        frontend, including an <strong>LLM-powered reporting pipeline</strong> and
+        <strong>containerized deployments</strong>, and contributed to their legacy IoT frontend.
       </p>
     </div>
     <div>
@@ -517,7 +562,7 @@
     <div class="section-head reveal">
       <div class="eyebrow">Selected work</div>
       <h2>Projects</h2>
-      <p>A mix of real-world BI dashboards, SQL data work, and ML-powered tooling.</p>
+      <p>A mix of real-world BI dashboards, SQL data work, and ML-powered tooling. Each project opens a short case study with the analysis behind it.</p>
     </div>
 
     <div class="grid">
@@ -532,12 +577,13 @@
           </div>
         </div>
         <div class="card-body">
-          <h3>Anomaly Detection Benchmarking Platform + Dashboard</h3>
+          <h3>Anomaly Detection Benchmarking Platform &amp; Dashboard</h3>
           <p>
-            My graduation project at <strong>deZem GmbH</strong> (Berlin): a full-stack platform that
-            benchmarks anomaly detection models against each other on real energy time series.
-            A Rust execution engine, a FastAPI backend and a React/TypeScript dashboard, deployed as
-            a five-service Docker stack. It produced deZem's first systematic three-model comparison
+            My graduation project at deZem GmbH (Berlin): a <strong>full-stack benchmarking platform</strong>
+            that compares anomaly detection models against each other on real energy time series.
+            A <strong>Rust execution engine</strong>, a <strong>FastAPI backend</strong> and a
+            <strong>React/TypeScript dashboard</strong>, deployed as a <strong>five-service Docker
+            stack</strong>. It produced deZem's <strong>first systematic three-model comparison</strong>
             on real energy data.
           </p>
           <div class="metrics">
@@ -550,9 +596,9 @@
             <span class="tech">FastAPI</span><span class="tech">PyTorch</span>
             <span class="tech">Docker</span>
           </div>
-          <details class="case">
-            <summary>Read the analysis</summary>
-            <div class="case-body">
+          <div class="case">
+            <button class="case-btn" type="button">Read the analysis</button>
+            <div class="case-body" hidden>
               <h4>The problem</h4>
               <p>
                 Choosing an anomaly detection model for energy time series had <strong>no systematic,
@@ -576,8 +622,8 @@
 
               <h4>The comparison it produced</h4>
               <p>
-                Three models on the identical A114 steam-flow test split, <strong>148 anomalies
-                across 5,934 points</strong>:
+                Three models on the same steam-flow test data, <strong>148 anomalies across
+                5,934 points</strong>:
               </p>
               <div class="tablewrap">
                 <table class="ctable">
@@ -592,9 +638,18 @@
                 </table>
               </div>
 
+              <div class="caveat">
+                <p>
+                  <strong>How far to read this:</strong> one dataset, one run. Each model also
+                  reads the data in differently sized windows, so the timings and the scores are
+                  not a perfectly like-for-like comparison. It is enough to tell the models apart
+                  by character, not enough to crown a winner in general.
+                </p>
+              </div>
+
               <h4>What it revealed</h4>
               <ul>
-                <li><strong>No single model wins</strong>, which is exactly the insight the platform existed to surface. Mamba leads on recall and F1, so it fits when a missed anomaly is expensive. The statistical baseline has the best precision, so it fits when false alarms are unacceptable. The Transformer is <strong>40× faster than Mamba</strong> at acceptable quality</li>
+                <li><strong>No single model wins</strong>, which is exactly what the platform was built to show. Mamba catches the most anomalies, so it suits cases where missing one is costly. The statistical baseline raises the fewest false alarms. The Transformer is much faster than Mamba while still catching a reasonable share</li>
                 <li><strong>Preparation matters as much as architecture.</strong> Fine-tuning took Mamba from the weakest model to the strongest on this dataset</li>
                 <li><strong>Threshold calibration alone lifted the Transformer's F1 from 0.365 to 0.497</strong>, with no retraining. A tuning decision, not a modelling one, bought a 36% improvement</li>
               </ul>
@@ -613,7 +668,7 @@
                 and broader sensor coverage beyond steam-flow (electricity, temperature, pressure).
               </p>
             </div>
-          </details>
+          </div>
         </div>
       </article>
 
@@ -626,22 +681,23 @@
         <div class="card-body">
           <h3>Mamba Autoencoder: Anomaly Detection Fine-Tuning</h3>
           <p>
-            Fine-tuned a Mamba-based autoencoder for time-series anomaly detection,
-            adapting the data pipeline, scoring logic, and serving API to match organization's real IoT sensor data for a single anomaly type, then
-            retrained and re-evaluated the model.
+            <strong>Fine-tuned a Mamba-based autoencoder</strong> for <strong>time-series anomaly
+            detection</strong>, adapting the data pipeline, scoring logic and serving API to match
+            the organization's <strong>real IoT sensor data</strong>, then retrained and
+            <strong>re-evaluated</strong> the model.
           </p>
           <div class="metrics">
             <div class="metric"><b>0.93</b><span>ROC-AUC</span></div>
             <div class="metric"><b>1.00</b><span>Recall</span></div>
-            <div class="metric"><b>0</b><span>Missed anomalies</span></div>
+            <div class="metric"><b>0.35</b><span>F1 (p99)</span></div>
           </div>
           <div class="tech-row">
             <span class="tech">Python</span><span class="tech">Mamba / SSM</span>
             <span class="tech">PyTorch</span><span class="tech">FastAPI</span>
           </div>
-          <details class="case">
-            <summary>Read the analysis</summary>
-            <div class="case-body">
+          <div class="case">
+            <button class="case-btn" type="button">Read the analysis</button>
+            <div class="case-body" hidden>
               <h4>The problem</h4>
               <p>
                 Labelled anomalies barely exist in real IoT data, so you can't train a classifier
@@ -658,19 +714,26 @@
 
               <h4>What the numbers say</h4>
               <p>
-                <strong>ROC-AUC 0.9274</strong>: the model separates normal from anomalous
-                behaviour well. <strong>Recall 1.00</strong>: it caught every single anomaly in
-                the test set. For condition monitoring that's the metric that matters: a missed
-                failure costs far more than a second look at a healthy sensor.
+                <strong>ROC-AUC 0.9274</strong> means the model gives anomalies higher scores than
+                normal readings most of the time. That is a good sign, and it doesn't depend on
+                where you set the alert threshold.
+              </p>
+              <p>
+                <strong>Recall 1.00 with F1 0.35</strong> is the part worth reading carefully.
+                Recall on its own proves little, because a model that flags everything also scores
+                1.00. Here precision works out at roughly <strong>0.21</strong>, so about four in
+                five alerts were false alarms. The model caught every anomaly, but it raised a lot
+                of noise doing it.
               </p>
 
               <div class="caveat">
                 <p>
-                  <strong>The honest caveat:</strong> F1 sits at 0.35, because precision is low.
-                  I traced this to a <strong>regime change in the test set</strong>. The machine's
-                  normal operating behaviour shifts partway through, so the model correctly reports
-                  "this isn't what I was trained on" and gets scored as wrong. It's a
-                  <em>drift</em> problem, not a detection problem.
+                  <strong>Where those false positives come from:</strong> I traced them to a
+                  <strong>regime change in the test set</strong>. The machine's normal operating
+                  behaviour shifts partway through, so the model correctly reports "this isn't
+                  what I was trained on" and gets scored as wrong. That points to a <em>drift</em>
+                  problem rather than a detection one, though it stays a hypothesis until the
+                  threshold is re-fitted on the post-shift regime and the precision recovers.
                 </p>
               </div>
 
@@ -678,9 +741,10 @@
               <p>
                 The numbers above are on a public benchmark. On the real energy dataset in the
                 benchmarking platform above, this same fine-tuned model reached
-                <strong>F1 0.723 with recall 0.872</strong>, the best of the three models compared,
-                which supports the diagnosis: the weak public-benchmark F1 came from that
-                dataset's regime shift, not from the model.
+                <strong>F1 0.723 with recall 0.872</strong>, the best of the three models compared.
+                That is consistent with the drift reading rather than proof of it, since the two
+                runs differ in dataset, domain and threshold percentile. What it does show is that
+                the weak public-benchmark F1 didn't carry over to the data the model was built for.
               </p>
 
               <h4>What I'd do next</h4>
@@ -689,7 +753,7 @@
                 so precision recovers without giving up the recall.
               </p>
             </div>
-          </details>
+          </div>
           <div class="card-links">
             <a href="https://github.com/NourElHoudaJammali/Mamba-autoencoder-fine-tuning" target="_blank" rel="noopener">View project →</a>
           </div>
@@ -705,9 +769,9 @@
         <div class="card-body">
           <h3>Transformer Autoencoder: Anomaly Detection Training</h3>
           <p>
-            Built out the training pipeline and serving API for a transformer-based
-            anomaly detection autoencoder, then fine-tuned it on new benchmark
-            datasets to improve detection performance on real sensor data.
+            Built the <strong>training pipeline</strong> and <strong>serving API</strong> for a
+            <strong>transformer-based anomaly detection autoencoder</strong>, then tuned it on
+            <strong>benchmark datasets</strong> to improve detection on real sensor data.
           </p>
           <div class="metrics">
             <div class="metric"><b>6</b><span>Model configs</span></div>
@@ -718,9 +782,9 @@
             <span class="tech">Python</span><span class="tech">Transformers</span>
             <span class="tech">PyTorch</span><span class="tech">FastAPI</span>
           </div>
-          <details class="case">
-            <summary>Read the analysis</summary>
-            <div class="case-body">
+          <div class="case">
+            <button class="case-btn" type="button">Read the analysis</button>
+            <div class="case-body" hidden>
               <h4>The problem</h4>
               <p>
                 There's no single right anomaly detector for every sensor. Rather than ship one
@@ -731,9 +795,9 @@
 
               <h4>The design decisions</h4>
               <ul>
-                <li><strong>Two architectures:</strong> a lightweight shared encoder with a LayerNorm <code>d_model/4</code> bottleneck, and a full encoder-decoder using learned decoder queries. The lightweight variant trades capacity for speed on constrained deployments</li>
-                <li><strong>Three size presets</strong> (pico, medium, ookii) across both, giving six configurations, so capacity can be tuned to the sensor rather than over-provisioned</li>
-                <li><strong>Trained models double as feature extractors</strong>, with mean/max/last/flatten pooling, so the learned representations stay reusable for downstream tasks instead of being locked inside one detector</li>
+                <li><strong>Two architectures:</strong> a lightweight one that compresses the signal through a small bottleneck, and a fuller encoder-decoder version. The lightweight one gives up some accuracy for speed, which matters when the model has to run on limited hardware</li>
+                <li><strong>Three sizes</strong> (pico, medium, ookii) for each, so six setups in total. A small sensor doesn't need a large model, and this makes that choice explicit</li>
+                <li><strong>Trained models can also be reused as feature extractors</strong>, so the patterns they learn aren't locked inside one detector</li>
               </ul>
 
               <h4>The part that actually decides performance</h4>
@@ -742,9 +806,9 @@
                 converts a reconstruction error into an alert. I implemented three strategies:
               </p>
               <ul>
-                <li><strong>Gaussian</strong> (default, mean + 3σ of training error): fast and stable when errors are well-behaved</li>
-                <li><strong>POT</strong>, using Extreme Value Theory to model the tail directly: the principled choice when errors are heavy-tailed and a Gaussian assumption would under-flag</li>
-                <li><strong>Percentile</strong> (p95): a blunt but predictable baseline to compare the other two against</li>
+                <li><strong>Gaussian</strong> (the default): alert when the error goes more than 3 standard deviations above the training average. Simple and stable when errors are evenly spread</li>
+                <li><strong>POT</strong>: models the extreme errors directly. More work, but it holds up better when a few very large errors would skew the simple average</li>
+                <li><strong>Percentile</strong> (top 5%): blunt, but predictable, and useful as a baseline to compare the other two against</li>
               </ul>
 
               <h4>Why it was built this way</h4>
@@ -754,7 +818,7 @@
                 platform above.
               </p>
             </div>
-          </details>
+          </div>
           <div class="card-links">
             <a href="https://github.com/NourElHoudaJammali/Transformer-autoencoder-training" target="_blank" rel="noopener">View project →</a>
           </div>
@@ -774,20 +838,21 @@
         <div class="card-body">
           <h3>KPI Sales &amp; Customer Dashboard</h3>
           <p>
-            A 3-page Power BI report covering Executive, Product, and Regional &amp; Customer
-            views: KPI cards for total sales, orders, customer count, YoY growth, and
-            sales YTD, a sales-over-time trend, sales by month per country, a
-            product-level sales/quantity breakdown, and customer distribution by country.
+            A <strong>3-page Power BI report</strong> covering Executive, Product and Regional &amp;
+            Customer views: <strong>KPI cards</strong> for total sales, orders, customer count,
+            <strong>YoY growth</strong> and <strong>sales YTD</strong>, a sales-over-time trend,
+            sales by month per country, a product-level breakdown, and customer distribution by
+            country.
           </p>
           <div class="metrics">
-            <div class="metric"><b>336.5M</b><span>Total sales</span></div>
             <div class="metric"><b>8K</b><span>Orders</span></div>
             <div class="metric"><b>3K</b><span>Customers</span></div>
+            <div class="metric"><b>3</b><span>Report pages</span></div>
           </div>
           <div class="tech-row"><span class="tech">Power BI</span><span class="tech">DAX</span></div>
-          <details class="case">
-            <summary>Read the analysis</summary>
-            <div class="case-body">
+          <div class="case">
+            <button class="case-btn" type="button">Read the analysis</button>
+            <div class="case-body" hidden>
               <h4>The problem</h4>
               <p>
                 An online gift retailer's transaction log covering <strong>Apr 2010 to Dec 2011</strong>:
@@ -802,27 +867,27 @@
                 showing everything:
               </p>
               <ul>
-                <li><strong>Executive</strong>: the headline position: 336.50M total sales, 303.72M year-to-date, 32.78M prior year, plus sales-over-time and sales-by-month-per-country</li>
+                <li><strong>Executive</strong>: the headline position, with total sales, year-to-date and prior-year KPI cards, a sales-over-time trend and sales by month per country</li>
                 <li><strong>Product</strong>: drills into a single item, with average price, average basket and its own sales trend</li>
-                <li><strong>Regional &amp; Customer</strong>: filters by country to expose who buys what and where, e.g. Belgium at 1.41M</li>
+                <li><strong>Regional &amp; Customer</strong>: filters by country to expose who buys what and where</li>
               </ul>
 
               <h4>What the data shows</h4>
               <ul>
-                <li><strong>Revenue is heavily concentrated in 2011.</strong> Sales-over-time is a smooth, modest line through 2010 and then becomes high-frequency and far more volatile through 2011, peaking above 6M</li>
+                <li><strong>Activity is heavily concentrated in 2011.</strong> Sales-over-time runs as a smooth, modest line through 2010, then becomes high-frequency and far more volatile through 2011</li>
                 <li><strong>Volatility is the story, not the average.</strong> Sharp spikes against a low baseline point to bulk or seasonal ordering rather than steady demand, a wholesale-style pattern, which changes how you'd forecast it</li>
                 <li><strong>Breadth beats depth per product.</strong> On the product page, top items reach only ~10 distinct customers each, so revenue rests on a wide catalogue of small buyer groups, not a few bestsellers</li>
               </ul>
 
               <div class="caveat">
                 <p>
-                  <strong>Reading the YoY figure correctly:</strong> the card shows 9.27, and
-                  303.72M ÷ 32.78M ≈ 9.27, so it's a <strong>ratio (≈9× growth)</strong>, not
-                  9.27%. It also compares a full 2011 against a partial 2010 starting in April,
-                  so part of that gap is coverage, not performance. Quoting it as "9.27% growth"
-                  would understate it by orders of magnitude and quoting it as 9× would overstate
-                  the real trend. My next iteration would normalise the comparison to matching
-                  periods and format the measure explicitly as a percentage.
+                  <strong>Reading the YoY figure correctly:</strong> the card shows 9.27, but
+                  dividing year-to-date sales by prior-year sales returns exactly that number, so
+                  the measure is producing a <strong>ratio, not a percentage</strong>. Quoting it
+                  as "9.27% growth" would understate it by orders of magnitude. It also compares a
+                  full 2011 against a partial 2010 starting in April, so part of the gap is
+                  coverage rather than performance. My next iteration would normalise the
+                  comparison to matching periods and format the measure explicitly as a percentage.
                 </p>
               </div>
 
@@ -834,7 +899,7 @@
                 filters to Belgium or to one product.
               </p>
             </div>
-          </details>
+          </div>
         </div>
       </article>
 
@@ -848,10 +913,10 @@
         <div class="card-body">
           <h3>Data Cleaning in SQL</h3>
           <p>
-            Took a messy, real-world layoffs dataset and made it
-            analysis-ready: removed duplicates, standardized inconsistent
-            text, fixed date formatting, filled in a few missing values
-            where possible, and dropped rows with no usable information.
+            Took a messy, real-world layoffs dataset and made it <strong>analysis-ready</strong>:
+            <strong>removed duplicates</strong>, <strong>standardized inconsistent text</strong>,
+            <strong>fixed date formatting</strong>, recovered missing values where possible, and
+            dropped rows with no usable information.
           </p>
           <div class="metrics">
             <div class="metric"><b>2,361</b><span>Rows in</span></div>
@@ -859,9 +924,9 @@
             <div class="metric"><b>0</b><span>Duplicates left</span></div>
           </div>
           <div class="tech-row"><span class="tech">SQL</span></div>
-          <details class="case">
-            <summary>Read the analysis</summary>
-            <div class="case-body">
+          <div class="case">
+            <button class="case-btn" type="button">Read the analysis</button>
+            <div class="case-body" hidden>
               <h4>The problem</h4>
               <p>
                 A raw layoffs dataset of <strong>2,361 rows</strong> that couldn't be trusted for
@@ -894,7 +959,7 @@
                 trustworthy.
               </p>
             </div>
-          </details>
+          </div>
           <div class="card-links"><a href="https://github.com/NourElHoudaJammali/Data_cleaning_Sql/blob/main/Data%20Cleaning%20in%20SQL.sql" target="_blank" rel="noopener">View project →</a></div>
         </div>
       </article>
@@ -909,9 +974,10 @@
         <div class="card-body">
           <h3>Exploratory Data Analysis in SQL</h3>
           <p>
-            Queried the cleaned dataset to answer real business questions: 
-            which companies and industries were hit hardest, how layoffs
-            trended year over year, and which companies led each year (using grouping, window functions, and rolling totals).
+            Queried the cleaned dataset to answer <strong>real business questions</strong>: which
+            companies and industries were hit hardest, how layoffs <strong>trended year over
+            year</strong>, and which companies led each year, using <strong>window functions</strong>
+            and <strong>rolling totals</strong>.
           </p>
           <div class="metrics">
             <div class="metric"><b>18,150</b><span>Largest cut</span></div>
@@ -919,9 +985,9 @@
             <div class="metric"><b>4 yrs</b><span>Trend covered</span></div>
           </div>
           <div class="tech-row"><span class="tech">SQL</span></div>
-          <details class="case">
-            <summary>Read the analysis</summary>
-            <div class="case-body">
+          <div class="case">
+            <button class="case-btn" type="button">Read the analysis</button>
+            <div class="case-body" hidden>
               <h4>The questions I set out to answer</h4>
               <p>
                 Who was hit hardest, was this an industry story or a company story, and was the
@@ -932,7 +998,7 @@
               <ul>
                 <li><strong>Layoffs came in rounds, not one event.</strong> Amazon's 18,150 is a sum across multiple rounds, while Google's 12,000 and Meta's 11,000 were single cuts. Aggregating per company instead of per row is what surfaces that difference</li>
                 <li><strong>2022 was the shock year.</strong> ~81k in 2020 → ~16k in 2021 → <strong>~161k in 2022</strong>, roughly a tenfold jump, then ~126k in 2023 by the data's cutoff</li>
-                <li><strong>Consumer and Retail led</strong>, ahead of Transportation and Finance. This wasn't only a tech-sector story</li>
+                <li><strong>Consumer and Retail led</strong>, ahead of Transportation and Finance. Read carefully, that ranking is about which <em>verticals</em> within tech were hit hardest, not the retail sector at large</li>
                 <li><strong>Some companies shut down entirely.</strong> Filtering on <code>percentage_laid_off = 1</code> separates full closures from cost-cutting, two very different signals</li>
               </ul>
 
@@ -943,13 +1009,13 @@
                 <li>Cross-cutting the data by <strong>funding stage</strong>, revealing whether mature Post-IPO firms or earlier-stage companies drove the volume</li>
               </ul>
 
-              <h4>The caveat I'd flag to a stakeholder</h4>
-              <p>
-                2023 is a partial year: it stops at the dataset's cutoff. Reading it as a
-                year-over-year decline from 2022 would be wrong.
-              </p>
+              <h4>The caveats I'd flag to a stakeholder</h4>
+              <ul>
+                <li><strong>2023 is a partial year</strong>, stopping at the dataset's cutoff. Reading it as a year-over-year decline from 2022 would be wrong</li>
+                <li><strong>This is a tech and startup sample, not the whole economy.</strong> Every company in it is tracked because it's venture-backed or tech-adjacent, so the industry labels describe verticals inside that world. Nothing here supports a claim about layoffs economy-wide, and the totals are floors rather than true counts, since only reported events appear</li>
+              </ul>
             </div>
-          </details>
+          </div>
           <div class="card-links"><a href="https://github.com/NourElHoudaJammali/Data_exploration_Sql/blob/main/Exploratory%20Data%20Analysis%20in%20SQL.sql" target="_blank" rel="noopener">View project →</a></div>
         </div>
       </article>
@@ -986,6 +1052,20 @@
   © <span id="year"></span> Nour, Built with care.
 </footer>
 
+<!-- ======================= CASE STUDY MODAL ======================= -->
+<dialog class="modal" id="caseModal" aria-labelledby="caseModalTitle">
+  <div class="modal-inner">
+    <div class="modal-head">
+      <div>
+        <div class="eyebrow">Case study</div>
+        <h3 id="caseModalTitle"></h3>
+      </div>
+      <button class="modal-close" type="button" aria-label="Close case study">✕</button>
+    </div>
+    <div class="modal-scroll" id="caseModalBody"></div>
+  </div>
+</dialog>
+
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -996,6 +1076,53 @@
     });
   }, { threshold:0.15 });
   revealEls.forEach(el=>io.observe(el));
+
+  // Case studies open in a modal so the project grid never shifts.
+  (function(){
+    const modal = document.getElementById('caseModal');
+    if(!modal) return;
+    const titleEl = document.getElementById('caseModalTitle');
+    const bodyEl  = document.getElementById('caseModalBody');
+    let opener = null;
+
+    document.querySelectorAll('.case-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const card = btn.closest('.card');
+        const body = btn.parentElement.querySelector('.case-body');
+        if(!body) return;
+
+        titleEl.textContent = card.querySelector('h3').textContent.trim();
+        bodyEl.innerHTML = '';
+        const clone = body.cloneNode(true);
+        clone.removeAttribute('hidden');
+        bodyEl.appendChild(clone);
+
+        opener = btn;
+        document.body.classList.add('modal-open');
+        modal.showModal();
+        bodyEl.scrollTop = 0;
+      });
+    });
+
+    const close = ()=>{ if(modal.open) modal.close(); };
+    modal.querySelector('.modal-close').addEventListener('click', close);
+
+    // click on the backdrop (outside the dialog box) closes it
+    modal.addEventListener('click', e=>{
+      if(e.target !== modal) return;      // clicks inside .modal-inner bubble as the child
+      const r = modal.getBoundingClientRect();
+      const outside = e.clientX < r.left || e.clientX > r.right ||
+                      e.clientY < r.top  || e.clientY > r.bottom;
+      if(outside) close();
+    });
+
+    // native ESC also fires 'close', so restore state in one place
+    modal.addEventListener('close', ()=>{
+      document.body.classList.remove('modal-open');
+      bodyEl.innerHTML = '';
+      if(opener){ opener.focus(); opener = null; }
+    });
+  })();
 
   // Cross-fade between screenshots every 5 seconds.
   // Pauses on hover, on keyboard focus, and on tap, so the reader stays in control.
