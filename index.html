@@ -240,16 +240,19 @@
   .slideshow{ position:relative; width:100%; height:100%; cursor:pointer; }
   .slideshow:focus-visible{ outline:3px solid var(--jade); outline-offset:-3px; }
   /* hint that the screenshots can be paused, and confirm when they are */
-  .slideshow::after{
-    content:'Tap to pause';
-    position:absolute; right:.6rem; bottom:.6rem;
+  /* only the visible slide should be clickable; the others are stacked underneath */
+  .slideshow img{ pointer-events:none; }
+  .slideshow img.active{ pointer-events:auto; }
+
+  .card-media::after{
+    content:'Click to enlarge';
+    position:absolute; right:.6rem; bottom:.6rem; z-index:2;
     background:rgba(51,44,42,.72); color:#fff;
     padding:.2rem .55rem; border-radius:999px;
     font-size:.66rem; font-weight:600; letter-spacing:.02em;
     opacity:0; transition:opacity .25s ease; pointer-events:none;
   }
-  .slideshow:hover::after, .slideshow:focus-visible::after{ opacity:1; }
-  .slideshow.paused::after{ content:'Paused'; opacity:1; background:var(--pink-deep); }
+  .card-media:hover::after, .card-media:focus-within::after{ opacity:1; }
   .slideshow img{
     position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
     opacity:0; transition:opacity 1s ease;
@@ -313,21 +316,34 @@
 
   /* ---------- case study modal ---------- */
   dialog.modal{
+    /* pin to the centre rather than relying on the UA default margins */
+    position:fixed;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    margin:0;
     padding:0; border:none; border-radius:26px;
-    width:min(680px, calc(100% - 2rem));
-    max-height:min(86vh, 900px);
+    width:min(940px, 94vw);
+    max-width:94vw;
+    height:auto;
+    max-height:88vh;
     background:#fff; color:var(--ink);
-    box-shadow:0 40px 80px -24px rgba(51,44,42,.5);
+    box-shadow:0 40px 90px -24px rgba(51,44,42,.5);
     overflow:hidden;
   }
+  /* [open] so the flex layout only applies while the dialog is shown */
+  dialog.modal[open]{ display:flex; }
   dialog.modal::backdrop{ background:rgba(51,44,42,.55); backdrop-filter:blur(3px); }
-  .modal-inner{ display:flex; flex-direction:column; max-height:inherit; }
+  .modal-inner{
+    display:flex; flex-direction:column;
+    width:100%; max-height:88vh;
+  }
   .modal-head{
+    flex:none;
     display:flex; align-items:flex-start; gap:1rem;
-    padding:1.4rem 1.5rem 1rem;
+    padding:1.6rem 2rem 1.1rem;
     border-bottom:1px solid rgba(51,44,42,.09);
   }
-  .modal-head h3{ font-size:1.2rem; flex:1; line-height:1.25; }
+  .modal-head h3{ font-size:1.45rem; flex:1; line-height:1.25; }
   .modal-head .eyebrow{
     font-size:.66rem; font-weight:700; letter-spacing:.1em;
     text-transform:uppercase; color:var(--jade); margin-bottom:.25rem;
@@ -342,16 +358,62 @@
   .modal-close:hover{ background:var(--pink); transform:rotate(90deg); }
   .modal-close:focus-visible{ outline:3px solid var(--jade); outline-offset:2px; }
   .modal-scroll{
-    overflow-y:auto; padding:1.3rem 1.5rem 1.7rem;
+    /* min-height:0 lets this shrink inside the flex column so it can scroll */
+    flex:1 1 auto; min-height:0;
+    overflow-y:auto; padding:1.5rem 2rem 2rem;
     overscroll-behavior:contain;
   }
+  /* roomier type than the card, since there is space for it */
+  .modal-scroll .case-body p,
+  .modal-scroll .case-body li{ font-size:.97rem; line-height:1.65; }
+  .modal-scroll .case-body h4{ font-size:.75rem; margin-bottom:.4rem; }
+  .modal-scroll .case-body h4 + p,
+  .modal-scroll .case-body h4 + ul{ margin-bottom:1.3rem; }
+  .modal-scroll .ctable{ font-size:.92rem; }
+
+  /* ---------- image lightbox ---------- */
+  .card-media img{ cursor:zoom-in; }
+  dialog.lightbox{
+    position:fixed; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    margin:0; padding:0; border:none; background:transparent;
+    width:min(1500px, 96vw); max-width:96vw; max-height:95vh;
+    overflow:visible;
+  }
+  dialog.lightbox[open]{ display:flex; flex-direction:column; gap:.7rem; }
+  dialog.lightbox::backdrop{ background:rgba(24,19,18,.9); }
+  .lb-img{
+    width:100%; max-height:84vh; object-fit:contain;
+    border-radius:14px; background:#fff;
+  }
+  .lb-bar{
+    display:flex; align-items:center; gap:1rem;
+    color:#fff; font-size:.85rem;
+  }
+  .lb-cap{ flex:1; opacity:.85; }
+  .lb-count{ opacity:.7; font-variant-numeric:tabular-nums; }
+  .lb-btn{
+    flex:none; width:36px; height:36px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.35); cursor:pointer;
+    background:rgba(255,255,255,.14); color:#fff;
+    font-size:1rem; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .2s ease;
+  }
+  .lb-btn:hover{ background:rgba(255,255,255,.3); }
+  .lb-btn:focus-visible{ outline:3px solid var(--jade); outline-offset:2px; }
+  .lb-btn[hidden]{ display:none !important; }
   .modal-scroll .case-body{ display:block; }
   body.modal-open{ overflow:hidden; }
 
   @media (max-width:520px){
-    dialog.modal{ width:calc(100% - 1rem); border-radius:20px; max-height:90vh; }
+    dialog.modal{ width:96vw; max-width:96vw; border-radius:20px; max-height:92vh; }
+    .modal-inner{ max-height:92vh; }
     .modal-head{ padding:1.1rem 1.1rem .8rem; }
-    .modal-scroll{ padding:1.1rem 1.1rem 1.4rem; }
+    .modal-head h3{ font-size:1.15rem; }
+    .modal-scroll{ padding:1.1rem 1.1rem 1.5rem; }
+    .modal-scroll .case-body p,
+    .modal-scroll .case-body li{ font-size:.92rem; }
   }
   .case-body h4{
     font-family:'Plus Jakarta Sans',sans-serif;
@@ -687,9 +749,9 @@
             <strong>re-evaluated</strong> the model.
           </p>
           <div class="metrics">
-            <div class="metric"><b>0.93</b><span>ROC-AUC</span></div>
-            <div class="metric"><b>1.00</b><span>Recall</span></div>
-            <div class="metric"><b>0.35</b><span>F1 (p99)</span></div>
+            <div class="metric"><b>0.72</b><span>F1 on real data</span></div>
+            <div class="metric"><b>0.87</b><span>Recall</span></div>
+            <div class="metric"><b>0.62</b><span>Precision</span></div>
           </div>
           <div class="tech-row">
             <span class="tech">Python</span><span class="tech">Mamba / SSM</span>
@@ -712,18 +774,23 @@
                 <li>Tuned the reconstruction-error threshold at the <strong>99th percentile</strong> of training error</li>
               </ul>
 
-              <h4>What the numbers say</h4>
+              <h4>Results on the real sensor data</h4>
               <p>
-                <strong>ROC-AUC 0.9274</strong> means the model gives anomalies higher scores than
-                normal readings most of the time. That is a good sign, and it doesn't depend on
-                where you set the alert threshold.
+                On the steam-flow dataset the model was actually built for, the fine-tuned version
+                reached <strong>F1 0.723</strong>, with <strong>recall 0.872</strong> and
+                <strong>precision 0.617</strong>. It caught roughly seven anomalies in eight while
+                keeping false alarms at a level an operator can live with, and it was the strongest
+                of the three models in the benchmarking platform above.
               </p>
+
+              <h4>What the public benchmark showed</h4>
               <p>
-                <strong>Recall 1.00 with F1 0.35</strong> is the part worth reading carefully.
-                Recall on its own proves little, because a model that flags everything also scores
-                1.00. Here precision works out at roughly <strong>0.21</strong>, so about four in
-                five alerts were false alarms. The model caught every anomaly, but it raised a lot
-                of noise doing it.
+                On <strong>SMD (Machine-1-1)</strong>, a standard public dataset, the picture was
+                very different: <strong>ROC-AUC 0.9274</strong>, but <strong>F1 only 0.35</strong>.
+                Recall came out at 1.00 there, which sounds ideal and isn't: precision works out at
+                roughly <strong>0.21</strong>, so about four in five alerts were false alarms. A
+                model that flags almost everything also scores a perfect recall, which is why that
+                number means little on its own.
               </p>
 
               <div class="caveat">
@@ -737,14 +804,13 @@
                 </p>
               </div>
 
-              <h4>How it performed on real data</h4>
+              <h4>Why both numbers are here</h4>
               <p>
-                The numbers above are on a public benchmark. On the real energy dataset in the
-                benchmarking platform above, this same fine-tuned model reached
-                <strong>F1 0.723 with recall 0.872</strong>, the best of the three models compared.
-                That is consistent with the drift reading rather than proof of it, since the two
-                runs differ in dataset, domain and threshold percentile. What it does show is that
-                the weak public-benchmark F1 didn't carry over to the data the model was built for.
+                The same model scores well on one dataset and poorly on another, and that gap is
+                the useful part. It is consistent with the drift reading rather than proof of it,
+                since the two runs differ in dataset, domain and threshold percentile. What it does
+                show is that a single benchmark number says little about how a detector will behave
+                on the data you actually care about.
               </p>
 
               <h4>What I'd do next</h4>
@@ -1066,6 +1132,18 @@
   </div>
 </dialog>
 
+<!-- ======================= IMAGE LIGHTBOX ======================= -->
+<dialog class="lightbox" id="lightbox" aria-label="Enlarged screenshot">
+  <img class="lb-img" id="lbImg" alt="">
+  <div class="lb-bar">
+    <span class="lb-cap" id="lbCap"></span>
+    <span class="lb-count" id="lbCount"></span>
+    <button class="lb-btn" id="lbPrev" type="button" aria-label="Previous image">‹</button>
+    <button class="lb-btn" id="lbNext" type="button" aria-label="Next image">›</button>
+    <button class="lb-btn" id="lbClose" type="button" aria-label="Close">✕</button>
+  </div>
+</dialog>
+
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -1125,37 +1203,98 @@
   })();
 
   // Cross-fade between screenshots every 5 seconds.
-  // Pauses on hover, on keyboard focus, and on tap, so the reader stays in control.
+  // Pauses on hover, on keyboard focus, and while the lightbox is open.
   const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const shows = [];
 
   document.querySelectorAll('[data-slideshow]').forEach(container=>{
-    const imgs = container.querySelectorAll('img');
+    const imgs = Array.from(container.querySelectorAll('img'));
     if(imgs.length < 2) return;
 
-    let i = 0, timer = null, held = false;
+    let i = 0, timer = null;
 
     const advance = ()=>{
       imgs[i].classList.remove('active');
       i = (i + 1) % imgs.length;
       imgs[i].classList.add('active');
     };
-    const start = ()=>{ if(!timer && !held && !noMotion) timer = setInterval(advance, 5000); };
+    const start = ()=>{ if(!timer && !noMotion) timer = setInterval(advance, 5000); };
     const stop  = ()=>{ clearInterval(timer); timer = null; };
-
-    // tap / click toggles a sticky pause (works on touch, where hover doesn't)
-    container.addEventListener('click', ()=>{
-      held = !held;
-      container.classList.toggle('paused', held);
-      held ? stop() : start();
-    });
 
     container.addEventListener('mouseenter', stop);
     container.addEventListener('mouseleave', start);
     container.addEventListener('focusin', stop);
     container.addEventListener('focusout', start);
 
+    shows.push({start, stop});
     start();
   });
+
+  // Click any screenshot to view it full size.
+  (function(){
+    const lb = document.getElementById('lightbox');
+    if(!lb) return;
+    const lbImg   = document.getElementById('lbImg');
+    const lbCap   = document.getElementById('lbCap');
+    const lbCount = document.getElementById('lbCount');
+    const lbPrev  = document.getElementById('lbPrev');
+    const lbNext  = document.getElementById('lbNext');
+
+    let group = [], idx = 0, opener = null;
+
+    const render = ()=>{
+      const el = group[idx];
+      lbImg.src = el.currentSrc || el.src;
+      lbImg.alt = el.alt || '';
+      lbCap.textContent = el.alt || '';
+      const multi = group.length > 1;
+      lbCount.textContent = multi ? (idx + 1) + ' / ' + group.length : '';
+      lbPrev.hidden = !multi;
+      lbNext.hidden = !multi;
+    };
+    const step = d =>{ idx = (idx + d + group.length) % group.length; render(); };
+
+    const open = (imgs, start, trigger)=>{
+      group = imgs; idx = start; opener = trigger || null;
+      render();
+      shows.forEach(s=>s.stop());               // don't advance behind the lightbox
+      document.body.classList.add('modal-open');
+      lb.showModal();
+    };
+
+    document.querySelectorAll('.card-media img').forEach(el=>{
+      el.tabIndex = 0;                          // make them reachable by keyboard
+      el.setAttribute('role','button');
+      const fire = ()=>{
+        const imgs = Array.from(el.closest('.card-media').querySelectorAll('img'));
+        open(imgs, Math.max(0, imgs.indexOf(el)), el);
+      };
+      el.addEventListener('click', fire);
+      el.addEventListener('keydown', e=>{
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); fire(); }
+      });
+    });
+
+    lbPrev.addEventListener('click', ()=>step(-1));
+    lbNext.addEventListener('click', ()=>step(1));
+    document.getElementById('lbClose').addEventListener('click', ()=>lb.close());
+
+    lb.addEventListener('keydown', e=>{
+      if(group.length < 2) return;
+      if(e.key === 'ArrowRight'){ e.preventDefault(); step(1); }
+      if(e.key === 'ArrowLeft'){ e.preventDefault(); step(-1); }
+    });
+
+    // clicking the dimmed area (or the gap around the image) closes it
+    lb.addEventListener('click', e=>{ if(e.target === lb) lb.close(); });
+
+    lb.addEventListener('close', ()=>{
+      document.body.classList.remove('modal-open');
+      lbImg.removeAttribute('src');
+      shows.forEach(s=>s.start());
+      if(opener){ opener.focus(); opener = null; }
+    });
+  })();
 </script>
 
 </body>
