@@ -565,7 +565,7 @@
       <p>
         <!-- EDIT ME: adjust intro copy freely -->
         <i>Welcome to a glimpse of my work!</i> <br> I'm Nour, a Business Computing graduate
-        specializing in Business Intelligence. I build analytics dashboards, ML-driven anomaly
+        specialising in Business Intelligence. I build analytics dashboards, ML-driven anomaly
         detection tools, and IoT data pipelines, with a focus on making the results clear enough
         that the people who have to decide something can actually use them.
       </p>
@@ -602,7 +602,7 @@
         frontend, a FastAPI backend, and <strong>three ML models</strong> brought together into a
         single evaluation pipeline. I also shipped features on deZem's production IoT analytics
         frontend, including an <strong>LLM-powered reporting pipeline</strong> and
-        <strong>containerized deployments</strong>, and contributed to their legacy IoT frontend.
+        <strong>containerised deployments</strong>, and contributed to their legacy IoT frontend.
       </p>
     </div>
     <div>
@@ -649,7 +649,7 @@
           </div>
         </div>
         <div class="card-body">
-          <h3>Anomaly Detection Benchmarking Platform &amp; Dashboard</h3>
+          <h3>Anomaly Detection Benchmarking Platform + Dashboard</h3>
           <p>
             My graduation project at deZem GmbH (Berlin): a <strong>full-stack benchmarking platform</strong>
             that compares anomaly detection models against each other on real energy time series.
@@ -755,7 +755,7 @@
           <p>
             <strong>Fine-tuned a Mamba-based autoencoder</strong> for <strong>time-series anomaly
             detection</strong>, adapting the data pipeline, scoring logic and serving API to match
-            the organization's <strong>real IoT sensor data</strong>, then retrained and
+            the organisation's <strong>real IoT sensor data</strong>, then retrained and
             <strong>re-evaluated</strong> the model.
           </p>
           <div class="metrics">
@@ -779,7 +779,7 @@
 
               <h4>What I did</h4>
               <ul>
-                <li>Adapted the data pipeline, scoring logic and serving API to the organization's real sensor data</li>
+                <li>Adapted the data pipeline, scoring logic and serving API to the organisation's real sensor data</li>
                 <li>Retrained and re-evaluated against the <strong>SMD (Machine-1-1)</strong> benchmark</li>
                 <li>Tuned the reconstruction-error threshold at the <strong>99th percentile</strong> of training error</li>
               </ul>
@@ -990,7 +990,7 @@
           <h3>Data Cleaning in SQL</h3>
           <p>
             Took a messy, real-world layoffs dataset and made it <strong>analysis-ready</strong>:
-            <strong>removed duplicates</strong>, <strong>standardized inconsistent text</strong>,
+            <strong>removed duplicates</strong>, <strong>standardised inconsistent text</strong>,
             <strong>fixed date formatting</strong>, recovered missing values where possible, and
             dropped rows with no usable information.
           </p>
@@ -1015,7 +1015,7 @@
               <ul>
                 <li><strong>Never touched the raw table.</strong> All work happened on a staging copy, so the import stays reproducible and the lineage is intact</li>
                 <li><strong>Duplicates:</strong> <code>ROW_NUMBER()</code> partitioned across every column to catch true duplicates, which found and removed 5</li>
-                <li><strong>Standardization:</strong> trimmed company whitespace, merged 3 "Crypto" spellings into one, stripped trailing periods from country names</li>
+                <li><strong>Standardisation:</strong> trimmed company whitespace, merged 3 "Crypto" spellings into one, stripped trailing periods from country names</li>
                 <li><strong>Dates:</strong> converted text to a real <code>DATE</code> type with <code>STR_TO_DATE()</code></li>
                 <li><strong>Missing values:</strong> recovered blank industries via a self-join on company name, rather than guessing or dropping them</li>
               </ul>
@@ -1129,7 +1129,7 @@
 </footer>
 
 <!-- ======================= CASE STUDY MODAL ======================= -->
-<dialog class="modal" id="caseModal" aria-labelledby="caseModalTitle">
+<dialog class="modal" id="caseModal" aria-labeledby="caseModalTitle">
   <div class="modal-inner">
     <div class="modal-head">
       <div>
