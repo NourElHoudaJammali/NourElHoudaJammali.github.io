@@ -328,20 +328,22 @@
     transform:translate(-50%,-50%);
     margin:0;
     padding:0; border:none; border-radius:26px;
-    width:min(1420px, 96vw);
-    max-width:96vw;
-    height:auto;
-    max-height:94vh;
-    background:#fff; color:var(--ink);
-    box-shadow:0 40px 90px -24px rgba(51,44,42,.5);
-    overflow:hidden;
+    width:min(1480px, 93vw);
+    max-width:93vw;
+    /* fixed height so every case study opens at the same generous size */
+    height:92vh;
+    max-height:92vh;
+    background:transparent; color:var(--ink);
+    overflow:visible;              /* lets the close button sit outside the panel */
   }
   /* [open] so the flex layout only applies while the dialog is shown */
-  dialog.modal[open]{ display:flex; }
-  dialog.modal::backdrop{ background:rgba(51,44,42,.55); backdrop-filter:blur(3px); }
+  dialog.modal[open]{ display:block; }
+  dialog.modal::backdrop{ background:rgba(51,44,42,.6); backdrop-filter:blur(3px); }
   .modal-inner{
     display:flex; flex-direction:column;
-    width:100%; max-height:94vh;
+    width:100%; height:100%;
+    background:#fff; border-radius:26px; overflow:hidden;
+    box-shadow:0 40px 90px -24px rgba(51,44,42,.5);
   }
   .modal-head{
     flex:none;
@@ -354,14 +356,18 @@
     font-size:.66rem; font-weight:700; letter-spacing:.1em;
     text-transform:uppercase; color:var(--jade); margin-bottom:.25rem;
   }
+  /* sits just outside the white panel, on the dimmed backdrop */
   .modal-close{
-    flex:none; width:34px; height:34px; border-radius:50%;
-    border:0; cursor:pointer; background:var(--cream-deep); color:var(--ink);
-    font-size:1.1rem; line-height:1;
+    position:absolute; top:-15px; right:-15px; z-index:2;
+    width:44px; height:44px; border-radius:50%;
+    cursor:pointer; font-size:1.15rem; line-height:1;
+    background:rgba(255,255,255,.18); color:#fff;
+    border:1px solid rgba(255,255,255,.5);
+    backdrop-filter:blur(4px);
     display:flex; align-items:center; justify-content:center;
     transition:background .2s ease, transform .2s ease;
   }
-  .modal-close:hover{ background:var(--pink); transform:rotate(90deg); }
+  .modal-close:hover{ background:rgba(255,255,255,.34); transform:rotate(90deg); }
   .modal-close:focus-visible{ outline:3px solid var(--jade); outline-offset:2px; }
   .modal-scroll{
     /* min-height:0 lets this shrink inside the flex column so it can scroll */
@@ -413,8 +419,9 @@
   body.modal-open{ overflow:hidden; }
 
   @media (max-width:520px){
-    dialog.modal{ width:96vw; max-width:96vw; border-radius:20px; max-height:92vh; }
-    .modal-inner{ max-height:92vh; }
+    dialog.modal{ width:92vw; max-width:92vw; height:88vh; max-height:88vh; }
+    .modal-inner{ border-radius:20px; }
+    .modal-close{ top:-13px; right:-13px; width:38px; height:38px; font-size:1rem; }
     .modal-head{ padding:1.1rem 1.1rem .8rem; }
     .modal-head h3{ font-size:1.15rem; }
     .modal-scroll{ padding:1.1rem 1.1rem 1.5rem; }
@@ -1132,10 +1139,10 @@
         <div class="eyebrow">Case study</div>
         <h3 id="caseModalTitle"></h3>
       </div>
-      <button class="modal-close" type="button" aria-label="Close case study">✕</button>
     </div>
     <div class="modal-scroll" id="caseModalBody"></div>
   </div>
+  <button class="modal-close" type="button" aria-label="Close case study">✕</button>
 </dialog>
 
 <!-- ======================= IMAGE LIGHTBOX ======================= -->
